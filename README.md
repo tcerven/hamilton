@@ -24,7 +24,7 @@ AddPlayer  | Attaches a player to a deck | The ***ID*** of the deck and the ***N
 ShowHands  | The ID of the deck | The ID of the deck | An array of Hands
 
 ### cards
-Cards are...
+Cards are encoded
 
 
 ## multi use cases
