@@ -1,6 +1,40 @@
 import json
 
-# import requests
+suits = ["H", "D", "S", "C"]
+ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
+class Dealer:
+    numDecks = 0
+    decks = {}      # (deck ID, deck[])
+    players = {}    # (deck ID, players[])
+
+    def singleDeck():
+        newDeck = []
+        for s in suits:
+            for r in ranks:
+                newDeck.append((r, s))
+
+        random.shuffle(newDeck) 
+
+        decks[numDecks] = newDeck                           # numDeck serves as the ID of newDeck
+        numDecks += 1
+
+        return (numDecks - 1)
+
+    def addPlayer(deckID, playerName):
+        decks[deckID].append(playerName)
+        return  len(decks[deckID])                          # player's ID is deck-specific (its position in the deck's player array)
+
+    def draw(deckID, playerID):
+        index = random.randrange(0, len(decks[deckID]))
+        card = decks[deckID].pop(index)                     # (rank, suit)
+        players[deckID][playerID].append(card)
+        return card
+
+    def showHands(deckID):
+        return decks[deckID]
+
+
 
 
 def lambda_handler(event, context):
@@ -33,10 +67,20 @@ def lambda_handler(event, context):
 
     #     raise e
 
+    try:
+        cmd = event["request"]
+    except requests.RequestException as e:
+        # Send some context about this error to Lambda Logs
+        print("Error: invalid request")
+
+        raise e
+
+    # depending on what "cmd" is, make appropriate calls to dealer functions, then use return values in JSON below
+
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
+            "suit": s,
+            "rank": r
         }),
     }
