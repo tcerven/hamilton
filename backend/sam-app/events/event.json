@@ -1,8 +1,8 @@
 {
-  "body": "{\"message\": \"hello world\"}",
+  "body": "{\"cmd\": \"SingleDeck\"}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
-  "httpMethod": "POST",
+  "httpMethod": "GET",
   "isBase64Encoded": false,
   "queryStringParameters": {
     "foo": "bar"

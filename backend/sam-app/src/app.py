@@ -1,8 +1,10 @@
 import json
 import random
+from pprint import pprint
 
 suits = ["H", "D", "S", "C"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
 
 class Dealer:
 
@@ -18,7 +20,7 @@ class Dealer:
             for r in ranks:
                 newDeck.append((r, s))
 
-        random.shuffle(newDeck) 
+        random.shuffle(newDeck)
 
         self.decks[self.numDecks] = newDeck                           # numDeck serves as the ID of newDeck
         self.players[self.numDecks] = []
@@ -42,51 +44,44 @@ class Dealer:
     def showHands(self, deckID):
         return self.hands[deckID]
 
+def formatResponse(statusCode,response):
+    return {
+        "statusCode": statusCode,
+        "body": json.dumps(response)
+        # "isBase64Encoded": False
+    }
+
+dealer = Dealer()
+sanity = 0
 
 def lambda_handler(event, context):
-    """Sample pure Lambda function
+    pprint(event)
+    """Dealer lambda
 
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
-    try:
-        cmd = event["request"]
-    except requests.RequestException as e:
-        # Send some context about this error to Lambda Logs
-        print("Error: invalid request")
-
-        raise e
+    global sanity,dealer
+    sanity += 1
+    print(sanity)
+    cmd = None
 
     # depending on what "cmd" is, make appropriate calls to dealer functions, then use return values in JSON below
+    try:
+        if event['httpMethod']=='GET':
+            cmd = event['queryStringParameters']['cmd']
+        elif event['httpMethod']=='POST':
+            cmd = json.loads(event['body'])['cmd']
+        else:
+            errmsg = f'Bad method {event["httpMethod"]}'
+            return formatResponse(400,{"error": errmsg})
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "suit": s,
-            "rank": r
-        }),
-    }
+    except (KeyError,TypeError) as e:
+        return formatResponse(400,{"error": "Bad request","e":str(e)})
+    except Exception as e:
+        return formatResponse(500,{"error": "Unknown","e":str(e)})
+    print(cmd)
+
+    if cmd=='SingleDeck':
+        return formatResponse(200,{"cmd": "SingleDeck", "deck": dealer.singleDeck()})
+
+
+    return formatResponse(200,{"cmd": cmd})

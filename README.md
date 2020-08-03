@@ -18,10 +18,10 @@ The project's backend is called the ***dealer*** and it is a service that respon
 
 Name  | Description | Parameters | Response
 ------------- | ------------- | -------------| -------------
-SingleDeck  | Creates a shuffled, deck with the standard 52 cards | None | The ***ID*** of the deck
-AddPlayer  | Attaches a player to a deck | The ***ID*** of the deck and the ***Name*** of the player | The ID of the player
-	Draw  | Removes a card from the deck and transfers to a hand | The ***ID*** of the deck and the ***ID*** of the player | The ***Card***
-ShowHands  | The ID of the deck | The ID of the deck | An array of Hands
+SingleDeck  | Creates a shuffled, deck with the standard 52 cards | None | Deck ID, e.g. `1294`
+AddPlayer  | Attaches a player to a deck | Deck ID and player NAME | Player ID, e.g. `1294-1`
+	Draw  | Removes a card from the deck and transfers to a hand | Deck ID and Player ID | A card from the deck, e.g. `4H`
+ShowHands  | Display all cards in all hands in addition to player names | Deck ID | An array of Hands
 
 ### cards
 Cards are encoded
@@ -32,3 +32,60 @@ Cards are encoded
 		* Add players
 		* Draw cards for players
 	2. Each person adds themself to an existing deck and everyone draws their own cards
+
+## build and deploy back-end
+Use the SAM CLI to build and deploy the back-end
+1. `sam build` or `sam build --use-container`. Each will update the requirements.txt file and pull the appropriate packages. As in all pythobn apps, there is no syntax checking until the app is run. You can run the app locally with this command `sam local invoke -e events/event.json`
+2. Run `sam package --s3-bucket hamilton-deploy --output-template-file dealer-deploy-cfn.json` to upload the app
+3. Run `sam deploy --template-file dealer-deploy-cfn.json --stack-name dealer-lambda --capabilities CAPABILITY_IAM` to deploy the app. Note the APIGateway endpoint for testing.
+
+## testing
+Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command to display the endpoints (outputs). Here is a sample.  
+
+	lits-tcerven:sam-app tomc$ aws cloudformation describe-stacks --stack-name dealer-lambda
+	{
+	    "Stacks": [
+	        {
+	            "StackId": "arn:aws:cloudformation:us-east-1:301737135826:stack/dealer-lambda/6ed8b590-d411-11ea-a19f-125caf34a739",
+	            "StackName": "dealer-lambda",
+	            "ChangeSetId": "arn:aws:cloudformation:us-east-1:301737135826:changeSet/samcli-deploy1596385315/222a2031-749e-478a-b8fb-082f6ee92e3f",
+	            "Description": "dealer-service\nSAM Template for Dealer service\n",
+	            "CreationTime": "2020-08-01T16:09:52.774000+00:00",
+	            "LastUpdatedTime": "2020-08-02T16:22:06.430000+00:00",
+	            "RollbackConfiguration": {},
+	            "StackStatus": "UPDATE_COMPLETE",
+	            "DisableRollback": false,
+	            "NotificationARNs": [],
+	            "Capabilities": [
+	                "CAPABILITY_IAM"
+	            ],
+	            "Outputs": [
+	                {
+	                    "OutputKey": "DealterFunction",
+	                    "OutputValue": "arn:aws:lambda:us-east-1:301737135826:function:dealer-lambda-DealerFunction-GZMWPRLKLP7A",
+	                    "Description": "Dealer Lambda Function ARN"
+	                },
+	                {
+	                    "OutputKey": "DealerApi",
+	                    "OutputValue": "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer/",
+	                    "Description": "API Gateway endpoint URL for Prod stage for Dealer function"
+	                },
+	                {
+	                    "OutputKey": "DealerIamRole",
+	                    "OutputValue": "arn:aws:iam::301737135826:role/dealer-lambda-DealerFunctionRole-L1UGFPCY1K16",
+	                    "Description": "Implicit IAM Role created for Dealer function"
+	                }
+	            ],
+	            "Tags": [],
+	            "EnableTerminationProtection": false,
+	            "DriftInformation": {
+	:
+The `Outputs` section contains the object the `"OutputKey": "DealerApi"` attribute. The `OutputValue` can be used to test the functions. 
+
+For instance, if the `OutputValue` were `https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/` then the following command would invoke the `SingleDeck` command:
+
+`curl https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=SingleDeck`
+
+The successful response would look like this:
+
+`{"cmd": "SingleDeck", "deck": 0}`
