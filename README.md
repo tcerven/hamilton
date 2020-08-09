@@ -46,9 +46,9 @@ Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command 
 	{
 	    "Stacks": [
 	        {
-	            "StackId": "arn:aws:cloudformation:us-east-1:301737135826:stack/dealer-lambda/6ed8b590-d411-11ea-a19f-125caf34a739",
+	            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/dealer-lambda/6ed8b590-d411-11ea-a19f-125caf34a739",
 	            "StackName": "dealer-lambda",
-	            "ChangeSetId": "arn:aws:cloudformation:us-east-1:301737135826:changeSet/samcli-deploy1596385315/222a2031-749e-478a-b8fb-082f6ee92e3f",
+	            "ChangeSetId": "arn:aws:cloudformation:us-east-1:123456789012:changeSet/samcli-deploy1596385315/222a2031-749e-478a-b8fb-082f6ee92e3f",
 	            "Description": "dealer-service\nSAM Template for Dealer service\n",
 	            "CreationTime": "2020-08-01T16:09:52.774000+00:00",
 	            "LastUpdatedTime": "2020-08-02T16:22:06.430000+00:00",
@@ -62,7 +62,7 @@ Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command 
 	            "Outputs": [
 	                {
 	                    "OutputKey": "DealterFunction",
-	                    "OutputValue": "arn:aws:lambda:us-east-1:301737135826:function:dealer-lambda-DealerFunction-GZMWPRLKLP7A",
+	                    "OutputValue": "arn:aws:lambda:us-east-1:123456789012:function:dealer-lambda-DealerFunction-GZMWPRLKLP7A",
 	                    "Description": "Dealer Lambda Function ARN"
 	                },
 	                {
@@ -72,7 +72,7 @@ Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command 
 	                },
 	                {
 	                    "OutputKey": "DealerIamRole",
-	                    "OutputValue": "arn:aws:iam::301737135826:role/dealer-lambda-DealerFunctionRole-L1UGFPCY1K16",
+	                    "OutputValue": "arn:aws:iam::123456789012:role/dealer-lambda-DealerFunctionRole-L1UGFPCY1K16",
 	                    "Description": "Implicit IAM Role created for Dealer function"
 	                }
 	            ],
