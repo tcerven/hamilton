@@ -82,6 +82,17 @@ def lambda_handler(event, context):
 
     if cmd=='SingleDeck':
         return formatResponse(200,{"cmd": "SingleDeck", "deck": dealer.singleDeck()})
+    elif cmd=='AddPlayer':
+        deckID = event['queryStringParameters']['deckID']
+        playerName = event['queryStringParameters']['playerName']
+        return formatResponse(200,{"cmd": "AddPlayer", "player": dealer.addPlayer(deckID, playerName)})
+    elif cmd=='Draw':
+        deckID = event['queryStringParameters']['deckID']
+        playerID = event['queryStringParameters']['playerID']
+        return formatResponse(200,{"cmd": "Draw", "card": dealer.draw(deckID, playerID)})
+    elif cmd=='ShowHands':
+        deckID = event['queryStringParameters']['deckID']
+        return formatResponse(200,{"cmd": "ShowHands", "hands": dealer.showHands(deckID)})
 
 
     return formatResponse(200,{"cmd": cmd})
