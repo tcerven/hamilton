@@ -94,5 +94,39 @@ def lambda_handler(event, context):
         deckID = event['queryStringParameters']['deckID']
         return formatResponse(200,{"cmd": "ShowHands", "hands": dealer.showHands(deckID)})
 
-
     return formatResponse(200,{"cmd": cmd})
+
+def main():
+    print("Dealer test")
+    while True:
+        print("Type 1 for SingleDeck")
+        print("Type 2 for AddPlayer")
+        print("Type x to Exit")
+        cmd_num = input('> ')
+        print(type(cmd_num))
+        if str(cmd_num)=='x':
+            break
+        event = {
+            "httpMethod": "GET",
+            "queryStringParameters": {}
+        }
+        if cmd_num=='1':
+            print('Shuffling a single deck')
+            event['queryStringParameters']['cmd']="SingleDeck"
+            print(lambda_handler(event,{}))
+        if cmd_num=='2':
+            deckID=input('deckID')
+            playerName=input('playerName')
+            print(f'Adding {playerName} to deck {deckID}')
+            event['queryStringParameters']['cmd']="AddPlayer"
+            event['queryStringParameters']['deckID']=deckID
+            event['queryStringParameters']['playerName']=playerName
+            print(lambda_handler(event,{}))
+
+    print('Goodbye')
+
+
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
