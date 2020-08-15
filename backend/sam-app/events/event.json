@@ -5,7 +5,7 @@
   "httpMethod": "GET",
   "isBase64Encoded": false,
   "queryStringParameters": {
-    "foo": "bar"
+    "cmd": "SingleDeck"
   },
   "pathParameters": {
     "proxy": "/path/to/resource"
