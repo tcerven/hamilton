@@ -35,8 +35,13 @@ Cards are encoded
 
 ## build and deploy back-end
 Use the SAM CLI to build and deploy the back-end
+
 1. `sam build` or `sam build --use-container`. Each will update the requirements.txt file and pull the appropriate packages. As in all pythobn apps, there is no syntax checking until the app is run. You can run the app locally with this command `sam local invoke -e events/event.json`
+
+
 2. Run `sam package --s3-bucket hamilton-deploy --output-template-file dealer-deploy-cfn.json` to upload the app
+
+
 3. Run `sam deploy --template-file dealer-deploy-cfn.json --stack-name dealer-lambda --capabilities CAPABILITY_IAM` to deploy the app. Note the APIGateway endpoint for testing.
 
 ## testing
