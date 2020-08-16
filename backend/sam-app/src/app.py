@@ -18,7 +18,6 @@ class Dealer:
         self.numDecks = 0
         self.decks = {}      # (deck ID, deck[])
         self.players = {}    # (deck ID, players[])
-        #self.hands = {}      # (deck ID, (player ID, hand[]))
 
     def singleDeck(self):
         newDeck = []
@@ -30,7 +29,6 @@ class Dealer:
 
         self.decks[self.numDecks] = newDeck                           # numDecks serves as the ID of newDeck
         self.players[self.numDecks] = []
-        #self.hands[self.numDecks] = {}
         self.numDecks += 1
 
         return (self.numDecks - 1)
@@ -39,7 +37,6 @@ class Dealer:
         player = Player(playerName)
         playerID = len(self.players[deckID])
         self.players[deckID].append(player)
-        #self.hands[deckID][playerID] = []
         return playerID                          # player's ID is deck-specific (its position in the deck's player array)
 
     def draw(self, deckID, playerID):
@@ -113,10 +110,10 @@ def main():
         print("Type 2 for AddPlayer")
         print("Type 3 for Draw")
         print("Type 4 for ShowHands")
-        print("Type 0 to Exit")
+        print("Type x to Exit")
         cmd_num = input('> ')
         print(type(cmd_num))
-        if str(cmd_num)=='0':
+        if str(cmd_num)=='x':
             break
         event = {
             "httpMethod": "GET",
@@ -128,9 +125,9 @@ def main():
             print(lambda_handler(event,{}))
 
         if str(cmd_num)=='2':
-            deckID=input('deckID: ')
+            deckID=int(input('deckID: '))
             print(type(deckID))
-            playerName=raw_input('playerName: ')
+            playerName=str(input('playerName: '))
             print(type(playerName))
             print('Adding {playerName} to deck {deckID}')
             event['queryStringParameters']['cmd']="AddPlayer"
@@ -139,18 +136,18 @@ def main():
             print(lambda_handler(event,{}))
 
         if str(cmd_num)=='3':
-            deckID=input('deckID: ')
+            deckID=int(input('deckID: '))
             print(type(deckID))
-            playerID=input('playerID: ')
+            playerID=int(input('playerID: '))
             print(type(playerID))
             print('Adding {playerID} to deck {deckID}')
             event['queryStringParameters']['cmd']="Draw"
             event['queryStringParameters']['deckID']=deckID
             event['queryStringParameters']['playerID']=playerID
             print(lambda_handler(event,{}))
-            
+
         if str(cmd_num)=='4':
-            deckID=input('deckID: ')
+            deckID=int(input('deckID: '))
             print(type(deckID))
             print("Showing hands for deck {deckID}")
             event['queryStringParameters']['cmd']="ShowHands"
