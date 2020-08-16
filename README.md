@@ -45,6 +45,14 @@ Use the SAM CLI to build and deploy the back-end
 3. Run `sam deploy --template-file dealer-deploy-cfn.json --stack-name dealer-lambda --capabilities CAPABILITY_IAM` to deploy the app. Note the APIGateway endpoint for testing.
 
 ## testing
+
+### using the test harness
+There is a simple test harness in a main() function in app.py. This makes it easy to test the lambda_handler without needing to use any sam commands. Just run `python app.py`.
+
+It should be easier to fix bugs now that you can test the lambda_handler by running app.py as a script.
+
+
+### testing through API calls
 Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command to display the endpoints (outputs). Here is a sample.  
 
 	lits-tcerven:sam-app tomc$ aws cloudformation describe-stacks --stack-name dealer-lambda
