@@ -1,10 +1,16 @@
 import json
 import random
+import string
 from pprint import pprint
 
 suits = ["H", "D", "S", "C"]
 ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
+class Player:
+
+    def __init__(self, playerName):
+        self.name = playerName
+        self.hand = []
 
 class Dealer:
 
@@ -12,7 +18,7 @@ class Dealer:
         self.numDecks = 0
         self.decks = {}      # (deck ID, deck[])
         self.players = {}    # (deck ID, players[])
-        self.hands = {}      # (deck ID, (player ID, hand[]))
+        #self.hands = {}      # (deck ID, (player ID, hand[]))
 
     def singleDeck(self):
         newDeck = []
@@ -22,27 +28,31 @@ class Dealer:
 
         random.shuffle(newDeck)
 
-        self.decks[self.numDecks] = newDeck                           # numDeck serves as the ID of newDeck
+        self.decks[self.numDecks] = newDeck                           # numDecks serves as the ID of newDeck
         self.players[self.numDecks] = []
-        self.hands[self.numDecks] = {}
+        #self.hands[self.numDecks] = {}
         self.numDecks += 1
 
         return (self.numDecks - 1)
 
     def addPlayer(self, deckID, playerName):
+        player = Player(playerName)
         playerID = len(self.players[deckID])
-        self.players[deckID].append(playerName)
-        self.hands[deckID][playerID] = []
-        return  (len(self.players[deckID]) - 1)                          # player's ID is deck-specific (its position in the deck's player array)
+        self.players[deckID].append(player)
+        #self.hands[deckID][playerID] = []
+        return playerID                          # player's ID is deck-specific (its position in the deck's player array)
 
     def draw(self, deckID, playerID):
         index = random.randrange(0, len(self.decks[deckID]))
         card = self.decks[deckID].pop(index)                     # (rank, suit)
-        self.hands[deckID][playerID].append(card)
+        self.players[deckID][playerID].hand.append(card)
         return card
 
     def showHands(self, deckID):
-        return self.hands[deckID]
+        hands = []
+        for p in self.players[deckID]:
+            hands.append((p.name, p.hand))
+        return hands
 
 def formatResponse(statusCode,response):
     return {
@@ -71,7 +81,7 @@ def lambda_handler(event, context):
         elif event['httpMethod']=='POST':
             cmd = json.loads(event['body'])['cmd']
         else:
-            errmsg = f'Bad method {event["httpMethod"]}'
+            errmsg = 'Bad method {event["httpMethod"]}'
             return formatResponse(400,{"error": errmsg})
 
     except (KeyError,TypeError) as e:
@@ -101,27 +111,52 @@ def main():
     while True:
         print("Type 1 for SingleDeck")
         print("Type 2 for AddPlayer")
-        print("Type x to Exit")
+        print("Type 3 for Draw")
+        print("Type 4 for ShowHands")
+        print("Type 0 to Exit")
         cmd_num = input('> ')
         print(type(cmd_num))
-        if str(cmd_num)=='x':
+        if str(cmd_num)=='0':
             break
         event = {
             "httpMethod": "GET",
             "queryStringParameters": {}
         }
-        if cmd_num=='1':
+        if str(cmd_num)=='1':
             print('Shuffling a single deck')
             event['queryStringParameters']['cmd']="SingleDeck"
             print(lambda_handler(event,{}))
-        if cmd_num=='2':
-            deckID=input('deckID')
-            playerName=input('playerName')
-            print(f'Adding {playerName} to deck {deckID}')
+
+        if str(cmd_num)=='2':
+            deckID=input('deckID: ')
+            print(type(deckID))
+            playerName=raw_input('playerName: ')
+            print(type(playerName))
+            print('Adding {playerName} to deck {deckID}')
             event['queryStringParameters']['cmd']="AddPlayer"
             event['queryStringParameters']['deckID']=deckID
             event['queryStringParameters']['playerName']=playerName
             print(lambda_handler(event,{}))
+
+        if str(cmd_num)=='3':
+            deckID=input('deckID: ')
+            print(type(deckID))
+            playerID=input('playerID: ')
+            print(type(playerID))
+            print('Adding {playerID} to deck {deckID}')
+            event['queryStringParameters']['cmd']="Draw"
+            event['queryStringParameters']['deckID']=deckID
+            event['queryStringParameters']['playerID']=playerID
+            print(lambda_handler(event,{}))
+            
+        if str(cmd_num)=='4':
+            deckID=input('deckID: ')
+            print(type(deckID))
+            print("Showing hands for deck {deckID}")
+            event['queryStringParameters']['cmd']="ShowHands"
+            event['queryStringParameters']['deckID']=deckID
+            print(lambda_handler(event,{}))
+
 
     print('Goodbye')
 
