@@ -46,9 +46,13 @@ class Dealer:
         return card
 
     def showHands(self, deckID):
-        hands = []
+        hands = {}
         for p in self.players[deckID]:
-            hands.append((p.name, p.hand))
+            cards = [] # strings
+            for card in p.hand:
+                # card[0] is the denomination, card[1] is the suit
+                cards.append(""+card[0]+card[1])
+            hands[p.name] = cards
         return hands
 
 def formatResponse(statusCode,response):
@@ -113,7 +117,7 @@ def main():
         print("Type x to Exit")
         cmd_num = input('> ')
         print(type(cmd_num))
-        if str(cmd_num)=='x':
+        if cmd_num=='x':
             break
         event = {
             "httpMethod": "GET",
@@ -122,7 +126,7 @@ def main():
         if str(cmd_num)=='1':
             print('Shuffling a single deck')
             event['queryStringParameters']['cmd']="SingleDeck"
-            print(lambda_handler(event,{}))
+            pprint(lambda_handler(event,{}))
 
         if str(cmd_num)=='2':
             deckID=int(input('deckID: '))
@@ -133,7 +137,7 @@ def main():
             event['queryStringParameters']['cmd']="AddPlayer"
             event['queryStringParameters']['deckID']=deckID
             event['queryStringParameters']['playerName']=playerName
-            print(lambda_handler(event,{}))
+            pprint(lambda_handler(event,{}))
 
         if str(cmd_num)=='3':
             deckID=int(input('deckID: '))
@@ -144,7 +148,7 @@ def main():
             event['queryStringParameters']['cmd']="Draw"
             event['queryStringParameters']['deckID']=deckID
             event['queryStringParameters']['playerID']=playerID
-            print(lambda_handler(event,{}))
+            pprint(lambda_handler(event,{}))
 
         if str(cmd_num)=='4':
             deckID=int(input('deckID: '))
@@ -152,7 +156,7 @@ def main():
             print("Showing hands for deck {deckID}")
             event['queryStringParameters']['cmd']="ShowHands"
             event['queryStringParameters']['deckID']=deckID
-            print(lambda_handler(event,{}))
+            pprint(lambda_handler(event,{}))
 
 
     print('Goodbye')
