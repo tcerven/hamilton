@@ -106,7 +106,19 @@ The successful response would look like this:
 
 ### curl commands for dealer requests
 
-Shuffle a deck: `curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=SingleDeck`  
-Add a player to a deck: `curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=AddPlayer&deckID=0&playerName=Jack"`
-Draw a card for a player from a deck: `curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=Draw&deckID=0&playerID=0"`
-Show all hands of a deck: `curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=ShowHands&deckID=0"`
+Shuffle a deck: 
+
+> curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=SingleDeck"  
+
+Add a player to a deck: 
+
+> curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=AddPlayer&deckID=0&playerName=Jack"
+
+
+Draw a card for a player from a deck: 
+
+> curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=Draw&deckID=0&playerID=0"
+
+Show all hands of a deck: 
+
+> curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=ShowHands&deckID=0"
