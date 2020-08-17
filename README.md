@@ -16,12 +16,13 @@ The project's backend is called the ***dealer*** and it is a service that respon
 ## requests
 
 
-Name  | Description | Parameters | Response
+Name  | Description | Query Parameters | Response
 ------------- | ------------- | -------------| -------------
-SingleDeck  | Creates a shuffled, deck with the standard 52 cards | None | Deck ID, e.g. `1294`
-AddPlayer  | Attaches a player to a deck | Deck ID and player NAME | Player ID, e.g. `1294-1`
-	Draw  | Removes a card from the deck and transfers to a hand | Deck ID and Player ID | A card from the deck, e.g. `4H`
-ShowHands  | Display all cards in all hands in addition to player names | Deck ID | An array of Hands
+SingleDeck  | Creates a shuffled, deck with the standard 52 cards | `cmd=SingleDeck` | `{"cmd": "SingleDeck", "deck": 0}`
+AddPlayer  | Attaches a player to a deck | `cmd=AddPlayer&deckID=0&playerName=Jack` | `{"cmd": "AddPlayer", "player": 0}`
+Draw  | Removes a card from the deck and transfers to a hand | `cmd=Draw&deckID=0&playerID=0` | `{"cmd": "Draw", "card": "6C"}`
+ShowHands  | Display all cards in all hands in addition to player names | `cmd=ShowHands&deckID=0` | `{"cmd": "ShowHands", "hands": {"Jack": ["6C"]}}`
+Discard (TBD) | Removes a card from a hand | Deck ID, Player ID and Card | A card from the deck, e.g. `4H`
 
 ### cards
 Cards are encoded
@@ -47,7 +48,7 @@ Use the SAM CLI to build and deploy the back-end
 ## testing
 
 ### using the test harness
-There is a simple test harness in a main() function in app.py. This makes it easy to test the lambda_handler without needing to use any sam commands. Just run `python app.py`.
+There is a simple test harness in a main() function in app.py. This makes it easy to test the lambda_handler without needing to use any sam commands. Just run `python3 app.py`.
 
 It should be easier to fix bugs now that you can test the lambda_handler by running app.py as a script.
 
@@ -95,10 +96,11 @@ Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command 
 	:
 The `Outputs` section contains the object the `"OutputKey": "DealerApi"` attribute. The `OutputValue` can be used to test the functions. 
 
-For instance, if the `OutputValue` were `https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/` then the following command would invoke the `SingleDeck` command:
+For instance, if the `OutputValue` were `https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/` then the following curl command would invoke the `SingleDeck` command:
 
-`curl https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=SingleDeck`
+`curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=SingleDeck"`
 
 The successful response would look like this:
 
 `{"cmd": "SingleDeck", "deck": 0}`
+
