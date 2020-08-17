@@ -43,7 +43,7 @@ class Dealer:
         index = random.randrange(0, len(self.decks[deckID]))
         card = self.decks[deckID].pop(index)                     # (rank, suit)
         self.players[deckID][playerID].hand.append(card)
-        return card
+        return ""+card[0]+card[1]
 
     def showHands(self, deckID):
         hands = {}
@@ -94,15 +94,15 @@ def lambda_handler(event, context):
     if cmd=='SingleDeck':
         return formatResponse(200,{"cmd": "SingleDeck", "deck": dealer.singleDeck()})
     elif cmd=='AddPlayer':
-        deckID = event['queryStringParameters']['deckID']
+        deckID = int(event['queryStringParameters']['deckID'])
         playerName = event['queryStringParameters']['playerName']
         return formatResponse(200,{"cmd": "AddPlayer", "player": dealer.addPlayer(deckID, playerName)})
     elif cmd=='Draw':
-        deckID = event['queryStringParameters']['deckID']
-        playerID = event['queryStringParameters']['playerID']
+        deckID = int(event['queryStringParameters']['deckID'])
+        playerID = int(event['queryStringParameters']['playerID'])
         return formatResponse(200,{"cmd": "Draw", "card": dealer.draw(deckID, playerID)})
     elif cmd=='ShowHands':
-        deckID = event['queryStringParameters']['deckID']
+        deckID = int(event['queryStringParameters']['deckID'])
         return formatResponse(200,{"cmd": "ShowHands", "hands": dealer.showHands(deckID)})
 
     return formatResponse(200,{"cmd": cmd})
