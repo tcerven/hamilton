@@ -1,5 +1,5 @@
 # hamilton
-Playing card services
+![](images/aces.png)Playing card services
 
 ## background
 Did you ever need a deck of cards but didn't have one? This is the dilemma that inspired the creation of an app that allows someone to use their computing device to simulate a deck of cards.
