@@ -39,7 +39,6 @@ const sendMessage = async event => {
   console.log(`postData: ${JSON.stringify(postData)}`);
   const data = postData.data;
 
-  const newConnections=[];
   console.log(`connections=${connections}`);
   console.log(`connections.length=${connections.length}`);
   const postCalls = connections.map(async (connectionId) => {
@@ -47,32 +46,35 @@ const sendMessage = async event => {
     try {
       await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: data }).promise();
       console.log(`Posted to ${connectionId}`);
-      newConnections.push(connectionId);
+      return {connectionId};
     } catch (e) {
       if (e.statusCode === 410) {
         console.log(`Found stale connection, deleting ${connectionId}`);
+        return {stale: connectionId}
         // we can say that the connectionId is "deleted" because we do not push
         // the connectionId into the newConnections list
       } else {
-        const msg = `postToConnection error e=${e}`;
+        const msg = `postToConnection failed for connection, deleting ${connectionId}, ${e}`;
         console.error(msg);
-        //throw e;
-        return `postToConnection failed for connection ${connectionId}, ${e}`;
+        return {error: e};
       }
     }
   });
 
   try {
     let callrets = await Promise.all(postCalls);
-    console.log(`callrets.length = ${callrets.length}`);
-    callrets.forEach(c => c==undefined ? console.log(`i am undefined`) : console.log(c));
-    //console.log(`callrets = ${callrets}`);
-    connections=newConnections;
+    connections = callrets.filter(c => {
+      c==undefined ? console.log(`i am undefined`) : console.log(c);
+      if (c && c.connectionId) {
+        return true;
+      }
+    });
+    connections = connections.map(c => c.connectionId);
+    console.log(`connections=${connections}`);
+
   } catch (e) {
     return { statusCode: 500, body: e.stack };
   }
-
-  console.log('Data sent.');
   return { statusCode: 200, body: 'Data sent.' };
 };
 
