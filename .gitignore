@@ -23,4 +23,13 @@
 hs_err_pid*
 
 #sam and cloudformation package and deployment files
-/backend/sam-app/dealer-deploy-cfn.json
+/backend/python/sam-app/dealer-deploy-cfn.json
+basic_game
+
+*.iml
+.idea/
+.aws-sam/
+packaged.yaml
+node_modules/
+package-lock.json
+.DS_Store

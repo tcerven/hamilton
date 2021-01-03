@@ -1,0 +1,11 @@
+{
+  "name": "controller",
+  "version": "1.0.0",
+  "description": "aggravation game for WebSockets on API Gateway",
+  "main": "src/app.js",
+  "author": "TC",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.655.0"
+  }
+}

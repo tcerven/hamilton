@@ -11,7 +11,7 @@ Did you ever need a deck of cards but didn't have one? This is the dilemma that 
 * Create a player
 * Draw a card and put it in a player's hand
 
-## multiuser functionaltity
+## multiuser functionality
 The project's backend is called the ***dealer*** and it is a service that responses to requests from the frontend.
 ## requests
 
@@ -94,7 +94,7 @@ Use the `aws cloudformation describe-stacks --stack-name dealer-lambda` command 
 	            "EnableTerminationProtection": false,
 	            "DriftInformation": {
 	:
-The `Outputs` section contains the object the `"OutputKey": "DealerApi"` attribute. The `OutputValue` can be used to test the functions. 
+The `Outputs` section contains the object the `"OutputKey": "DealerApi"` attribute. The `OutputValue` can be used to test the functions.
 
 For instance, if the `OutputValue` were `https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/` then the following curl command would invoke the `SingleDeck` command:
 
@@ -106,19 +106,19 @@ The successful response would look like this:
 
 ### curl commands for dealer requests
 
-Shuffle a deck: 
+Shuffle a deck:
 
 > curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=SingleDeck"  
 
-Add a player to a deck: 
+Add a player to a deck:
 
 > curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=AddPlayer&deckID=0&playerName=Jack"
 
 
-Draw a card for a player from a deck: 
+Draw a card for a player from a deck:
 
 > curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=Draw&deckID=0&playerID=0"
 
-Show all hands of a deck: 
+Show all hands of a deck:
 
 > curl "https://v8193d8cze.execute-api.us-east-1.amazonaws.com/Prod/dealer?cmd=ShowHands&deckID=0"
